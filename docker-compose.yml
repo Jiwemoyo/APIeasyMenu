@@ -1,0 +1,14 @@
+version: '3.8'  # Versión de la especificación de Docker Compose que estás utilizando
+
+services:  # Definición de los servicios que componen tu aplicación
+
+  mongo-db:  # Nombre del servicio para el contenedor de MongoDB
+    image: mongo:6.0.13  # Imagen de Docker que se utilizará para el contenedor de MongoDB (la última versión disponible)
+    restart: always  # Política de reinicio del contenedor: siempre reiniciar si falla
+    environment:  # Variables de entorno que se pasan al contenedor
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}  # Nombre de usuario de MongoDB
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}  # Contraseña de MongoDB
+    volumes:  # Volúmenes que se montan en el contenedor
+      - ./mongo:/data/db  # Montar el directorio local "./mongo" en el contenedor en "/data/db"
+    ports:  # Mapeo de puertos entre el contenedor y el host
+      - 27017:27017  # Mapear el puerto 27017 del contenedor al puerto 27017 del host
