@@ -1,4 +1,4 @@
-const express = require('express');
+import  express from 'express'
 const { config } = require('dotenv');
 const bodyParser = require('body-parser');
 const connectDB = require('./config/dbConfig');

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Api para todas las caracteristicas de un minimo viable para el blog de EasyMenu",
   "main": "src/app.js",
+  "type" : "module",
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js"
