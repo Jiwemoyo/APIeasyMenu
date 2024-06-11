@@ -1,8 +1,10 @@
-import  express from 'express'
-const { config } = require('dotenv');
-const bodyParser = require('body-parser');
-const connectDB = require('./config/dbConfig');
-const recipeRoutes = require('./routes/recipeRoutes');
+import  express from 'express.js'
+import { config } from 'dotenv.js';
+import bodyParser from 'body-parser.js';
+import  connectDB from './config/dbConfig.js';
+import  recipeRoutes from './routes/recipeRoutes.js';
+
+//importar para el typo modulo
 
 config();
 

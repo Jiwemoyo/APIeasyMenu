@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "Api para todas las caracteristicas de un minimo viable para el blog de EasyMenu",
   "main": "src/app.js",
-  "type" : "module",
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js"
@@ -17,6 +16,7 @@
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "mongoose": "^8.4.1"
+    "mongoose": "^8.4.1",
+    "moongose": "^1.0.0"
   }
 }
