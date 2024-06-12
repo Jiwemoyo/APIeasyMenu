@@ -15,7 +15,6 @@ app.use(bodyParser.json());
 connectDB();
 
 app.use('/api/auth', authRoutes);
-
-app.use('/recipes', recipeRoutes);
+app.use('/api/recipes', recipeRoutes);
 
 module.exports = app;
