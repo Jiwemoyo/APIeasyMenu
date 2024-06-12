@@ -3,7 +3,8 @@ const { config } = require('dotenv');
 const bodyParser = require('body-parser');
 const connectDB = require('./config/dbConfig');
 const recipeRoutes = require('./routes/recipeRoutes');
-const authRoutes = require('./routes/authRoutes')
+const authRoutes = require('./routes/authRoutes');
+const commentRoutes = require('./routes/commentRoutes')
 
 config();
 
@@ -16,5 +17,6 @@ connectDB();
 
 app.use('/api/auth', authRoutes);
 app.use('/api/recipes', recipeRoutes);
+app.use('/api/comments', commentRoutes);
 
 module.exports = app;
