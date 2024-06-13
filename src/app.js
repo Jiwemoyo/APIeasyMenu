@@ -5,6 +5,7 @@ const connectDB = require('./config/dbConfig');
 const recipeRoutes = require('./routes/recipeRoutes');
 const authRoutes = require('./routes/authRoutes');
 const commentRoutes = require('./routes/commentRoutes')
+const likeRoutes = require('./routes/likeRoutes');
 
 config();
 
@@ -18,5 +19,6 @@ connectDB();
 app.use('/api/auth', authRoutes);
 app.use('/api/recipes', recipeRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/likes', likeRoutes);
 
 module.exports = app;

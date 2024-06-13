@@ -4,45 +4,37 @@ const Schema = mongoose.Schema;
 const recipeSchema = new Schema({
     title: {
         type: String,
-        required: true,
+        required: true
     },
     description: {
         type: String,
-        required: true,
+        required: true
     },
-    ingredients: [{
-        name: {
-            type: String,
-            required: true,
-        },
-        quantity: {
-            type: String,
-            required: true,
-        }
-    }],
-    steps: [{
-        stepNumber: {
-            type: Number,
-            required: true,
-        },
-        instruction: {
-            type: String,
-            required: true,
-        }
-    }],
+    ingredients: {
+        type: [String],
+        required: true
+    },
+    steps: {
+        type: [String],
+        required: true
+    },
     author: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
+        required: true
     },
-    likes: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-    }],
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment',
-    }]
+        ref: 'Comment'
+    }],
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Like'
+    }],
+    image: {
+        type: String,
+        required: false
+    }
 }, {
     timestamps: true
 });

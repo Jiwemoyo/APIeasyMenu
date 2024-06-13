@@ -3,13 +3,15 @@ const Recipe = require('../models/recipeModel');
 // Crear una nueva receta
 exports.createRecipe = async (req, res) => {
     const { title, description, ingredients, steps } = req.body;
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
     try {
         const recipe = new Recipe({
             title,
             description,
             ingredients,
             steps,
-            author: req.user.userId
+            author: req.user.userId,
+            image
         });
         await recipe.save();
         res.status(201).json(recipe);
@@ -44,6 +46,7 @@ exports.getRecipeById = async (req, res) => {
 exports.updateRecipe = async (req, res) => {
     const { id } = req.params;
     const { title, description, ingredients, steps } = req.body;
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
     try {
         const recipe = await Recipe.findById(id);
         if (!recipe) return res.status(404).json({ message: 'Recipe not found' });
@@ -56,6 +59,7 @@ exports.updateRecipe = async (req, res) => {
         recipe.description = description || recipe.description;
         recipe.ingredients = ingredients || recipe.ingredients;
         recipe.steps = steps || recipe.steps;
+        if (image) recipe.image = image;
 
         await recipe.save();
         res.status(200).json(recipe);
