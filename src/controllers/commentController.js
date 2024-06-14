@@ -68,7 +68,7 @@ exports.deleteComment = async (req, res) => {
             return res.status(403).json({ message: 'Unauthorized' });
         }
 
-        await comment.remove();
+        await comment.deleteOne();
 
         const recipe = await Recipe.findById(comment.recipe);
         recipe.comments.pull(comment._id);

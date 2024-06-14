@@ -33,7 +33,7 @@ exports.unlikeRecipe = async (req, res) => {
         const like = await Like.findOne({ user: req.user.userId, recipe: recipeId });
         if (!like) return res.status(404).json({ message: 'Like not found' });
 
-        await like.remove();
+        await like.deleteOne();
         const recipe = await Recipe.findById(recipeId);
         recipe.likes.pull(like._id);
         await recipe.save();
