@@ -28,8 +28,16 @@ Esta es la API para la aplicación Easy Menu, una plataforma de blogs de comida 
 
     ```env
     PORT=3000
-    MONGO_URI=mongodb://localhost:27017/easy-menu
-    JWT_SECRET=tu_secreto_jwt
+    MONGO_URL = mongodb://tumongouser:tupassword@localhost:27017
+    MONGO_USER = tumongouser
+    MONGO_PASS = tupassword
+    MONGO_DB_NAME =easyMenu
+    JWT_SECRET="tusecreto"
+    ```
+4. Crea una carpeta uploads para que se suban las imagenes de las recetas
+
+    ```bash
+    mkdir uploads
     ```
 
 ## Uso
