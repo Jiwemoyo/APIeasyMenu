@@ -36,7 +36,7 @@ Esta es la API para la aplicación Easy Menu, una plataforma de blogs de comida 
 1. Inicia el servidor:
 
     ```bash
-    npm start
+    npm run dev
     ```
 
 2. La API estará disponible en `http://localhost:3000`.
