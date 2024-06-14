@@ -254,14 +254,9 @@ Para ejecutar la API con Docker:
 1. Construye la imagen de Docker:
 
     ```bash
-    docker build -t easy-menu-api .
+    docker compose up -d.
     ```
-
-2. Inicia el contenedor:
-
-    ```bash
-    docker run -d -p 3000:3000 --env-file .env easy-menu-api
-    ```
+    usamos docker desktop y el archivo docker compose para levantar la imagen de mongo
 
 ## Contribuciones
 
