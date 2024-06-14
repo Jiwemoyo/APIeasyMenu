@@ -7,6 +7,7 @@ Esta es la API para la aplicación Easy Menu, una plataforma de blogs de comida 
 - Node.js
 - MongoDB
 - npm (Node Package Manager)
+- docker desktop
 
 ## Instalación
 
