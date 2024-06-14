@@ -14,8 +14,8 @@ Esta es la API para la aplicación Easy Menu, una plataforma de blogs de comida 
 1. Clona el repositorio:
 
     ```bash
-    git clone https://github.com/tu-usuario/easy-menu-api.git
-    cd easy-menu-api
+    git clone https://github.com/Jiwemoyo/APIeasyMenu.git
+    cd APIeasyMenu
     ```
 
 2. Instala las dependencias:
