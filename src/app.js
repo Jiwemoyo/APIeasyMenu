@@ -6,7 +6,8 @@ const recipeRoutes = require('./routes/recipeRoutes');
 const authRoutes = require('./routes/authRoutes');
 const commentRoutes = require('./routes/commentRoutes')
 const likeRoutes = require('./routes/likeRoutes');
-const adminRoutes = require('./routes/adminRoutes'); 
+const adminRoutes = require('./routes/adminRoutes');
+const cors = require('cors')
 
 config();
 
@@ -14,6 +15,7 @@ config();
 const app = express();
 app.use(bodyParser.json());
 app.use('/uploads', express.static('uploads'));
+app.use(cors());
 
 //Toto esto de conectar la base de datos esta hecho en el archivo config dentro de dbConfig.js
 connectDB();
