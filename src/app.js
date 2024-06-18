@@ -8,13 +8,14 @@ const commentRoutes = require('./routes/commentRoutes')
 const likeRoutes = require('./routes/likeRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const cors = require('cors')
+const path = require('path');
 
 config();
 
 //lo otro que falta es la conexion al servidor esa esta hecha en server.js
 const app = express();
 app.use(bodyParser.json());
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use(cors());
 
 //Toto esto de conectar la base de datos esta hecho en el archivo config dentro de dbConfig.js
