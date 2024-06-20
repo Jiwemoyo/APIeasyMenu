@@ -39,6 +39,17 @@ Esta es la API para la aplicación Easy Menu, una plataforma de blogs de comida 
     ```bash
     mkdir uploads
     ```
+## Docker
+
+Para ejecutar la API con Docker:
+
+1. Construye la imagen de Docker:
+
+    ```bash
+    docker compose up -d.
+    ```
+    usamos docker desktop y el archivo docker compose para levantar la imagen de mongo
+
 
 ## Uso
 
@@ -157,9 +168,11 @@ Esta es la API para la aplicación Easy Menu, una plataforma de blogs de comida 
 
 #### Obtener Receta por ID
 
-- **URL:** `/api/recipes/:recipeId`
+- **URL:** `/api/recipes/user`
 - **Método:** `GET`
 - **Descripción:** Obtiene los detalles de una receta por ID.
+- **Headers:**
+    - `Authorization: Bearer <tu_token_jwt>`
 
 #### Actualizar Receta
 
@@ -200,13 +213,13 @@ Esta es la API para la aplicación Easy Menu, una plataforma de blogs de comida 
     ```json
     {
         "recipeId": "ID de la receta",
-        "text": "Texto del comentario"
+        "content": "Texto del comentario"
     }
     ```
 
 #### Obtener Comentarios por Receta
 
-- **URL:** `/api/comments/recipe/:recipeId`
+- **URL:** `/api/comments/:recipeId`
 - **Método:** `GET`
 - **Descripción:** Obtiene todos los comentarios de una receta específica.
 
@@ -250,22 +263,18 @@ Esta es la API para la aplicación Easy Menu, una plataforma de blogs de comida 
 
 #### Eliminar Like
 
-- **URL:** `/api/likes/:likeId`
+- **URL:** `/api/likes`
 - **Método:** `DELETE`
 - **Descripción:** Elimina un "me gusta" por ID.
 - **Headers:**
     - `Authorization: Bearer <tu_token_jwt>`
+- **Body:**
+    ```json
+    {
+        "recipeId": "ID de la receta"
+    }
+    ``` 
 
-## Docker
-
-Para ejecutar la API con Docker:
-
-1. Construye la imagen de Docker:
-
-    ```bash
-    docker compose up -d.
-    ```
-    usamos docker desktop y el archivo docker compose para levantar la imagen de mongo
 
 ## Contribuciones
 
