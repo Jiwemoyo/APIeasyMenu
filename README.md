@@ -162,17 +162,9 @@ Para ejecutar la API con Docker:
 
 #### Obtener Recetas por Usuario
 
-- **URL:** `/api/recipes/user/:userId`
-- **Método:** `GET`
-- **Descripción:** Obtiene todas las recetas de un usuario específico.
-
-#### Obtener Receta por ID
-
 - **URL:** `/api/recipes/user`
 - **Método:** `GET`
-- **Descripción:** Obtiene los detalles de una receta por ID.
-- **Headers:**
-    - `Authorization: Bearer <tu_token_jwt>`
+- **Descripción:** Obtiene todas las recetas de un usuario específico.
 
 #### Actualizar Receta
 
