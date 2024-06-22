@@ -54,3 +54,14 @@ exports.getLikesByRecipe = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+//obtener la cantidad de likes por receta
+exports.getLikesCountByRecipe = async (req, res) => {
+    const { recipeId } = req.params;
+    try {
+        const likesCount = await Like.countDocuments({ recipe: recipeId });
+        res.status(200).json({ count: likesCount });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
