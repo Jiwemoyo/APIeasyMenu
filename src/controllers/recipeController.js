@@ -89,7 +89,10 @@ exports.deleteRecipe = async (req, res) => {
 // Obtener recetas del usuario autenticado
 exports.getRecipesByUser = async (req, res) => {
     try {
-        const recipes = await Recipe.find({ author: req.user.userId }).populate('author', 'username');
+        const recipes = await Recipe.find({ author: req.user.userId })
+            .populate('author', 'username')
+            .populate('comments')
+            .populate('likes');
         res.status(200).json(recipes);
     } catch (error) {
         res.status(400).json({ error: error.message });
