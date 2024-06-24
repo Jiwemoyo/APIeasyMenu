@@ -15,7 +15,6 @@ exports.createComment = async (req, res) => {
         });
 
         await comment.save();
-
         recipe.comments.push(comment._id);
         await recipe.save();
 
@@ -24,7 +23,6 @@ exports.createComment = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-
 // Obtener todos los comentarios de una receta
 exports.getCommentsByRecipe = async (req, res) => {
     const { recipeId } = req.params;
