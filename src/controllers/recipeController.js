@@ -43,7 +43,13 @@ exports.getRecipes = async (req, res) => {
 exports.getRecipeById = async (req, res) => {
     const { id } = req.params;
     try {
-        const recipe = await Recipe.findById(id).populate('author', 'username');
+        const recipe = await Recipe.findById(id)
+            .populate('author', 'username') // Populate para el autor
+            .populate({ 
+                path: 'comments',
+                populate: { path: 'author', select: 'username' } // Populate para comentarios
+            })
+            .populate('likes'); // Populate para likes, si es necesario
         if (!recipe) return res.status(404).json({ message: 'Recipe not found' });
         res.status(200).json(recipe);
     } catch (error) {
