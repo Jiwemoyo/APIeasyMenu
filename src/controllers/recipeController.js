@@ -23,8 +23,17 @@ exports.createRecipe = async (req, res) => {
 // Obtener todas las recetas
 exports.getRecipes = async (req, res) => {
     try {
-        const recipes = await Recipe.find().populate('author', 'username');
-        res.status(200).json(recipes);
+        const recipes = await Recipe.find()
+            .populate('author', 'username')
+            .populate({ 
+                path: 'likes', 
+                select: '_id' 
+            });
+        const recipesWithLikes = recipes.map(recipe => ({
+            ...recipe._doc,
+            likesCount: recipe.likes.length
+        }));
+        res.status(200).json(recipesWithLikes);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
