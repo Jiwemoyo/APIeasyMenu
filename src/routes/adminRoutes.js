@@ -8,6 +8,6 @@ router.post('/users', authenticateToken, authorizeAdmin, adminController.createU
 router.get('/users', authenticateToken, authorizeAdmin, adminController.getUsers);
 router.get('/users/:id', authenticateToken, authorizeAdmin, adminController.getUserById);
 router.put('/users/:id', authenticateToken, authorizeAdmin, adminController.updateUser);
-router.delete('/users/:id', authenticateToken, authorizeAdmin, adminController.deleteUser);
+router.delete('/users/:userId', authenticateToken, authorizeAdmin, adminController.deleteUser);
 
 module.exports = router;

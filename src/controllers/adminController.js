@@ -62,7 +62,7 @@ exports.deleteUser = async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
-        await user.deleteOne(); // Usar deleteOne en lugar de remove
+        await user.deleteOne();
 
         res.status(200).json({ message: 'Usuario eliminado exitosamente' });
     } catch (error) {
