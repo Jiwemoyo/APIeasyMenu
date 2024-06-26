@@ -119,3 +119,24 @@ exports.getRecipesByUser = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+
+// recipeController.js
+
+exports.getRecipesByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const recipes = await Recipe.find({ author: userId })
+            .populate('author', 'username')
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'author',
+                    select: 'username'
+                }
+            });
+        res.status(200).json(recipes);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
