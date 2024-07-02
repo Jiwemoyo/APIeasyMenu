@@ -6,6 +6,7 @@ const recipeRoutes = require('./routes/recipeRoutes');
 const authRoutes = require('./routes/authRoutes');
 const commentRoutes = require('./routes/commentRoutes')
 const likeRoutes = require('./routes/likeRoutes');
+const RestaurantRoutes = require('./routes/restaurantRoutes')
 const adminRoutes = require('./routes/adminRoutes');
 const cors = require('cors')
 const path = require('path');
@@ -26,5 +27,6 @@ app.use('/api/recipes', recipeRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/likes', likeRoutes);
 app.use('/api/admin', adminRoutes); 
+app.use('/api/restaurants',RestaurantRoutes)
 
 module.exports = app;
