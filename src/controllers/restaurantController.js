@@ -46,3 +46,12 @@ exports.deleteRestaurant = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+exports.getRestaurantsByUserId = async (req, res) => {
+  try {
+    const restaurants = await Restaurant.find({ userId: req.params.userId });
+    res.status(200).json(restaurants);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
