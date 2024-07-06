@@ -25,19 +25,15 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Middleware para encriptar la contraseña antes de guardar el usuario
-userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) {
-        return next();
-    }
+userSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) return next();
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
     next();
 });
 
-// Método para comparar la contraseña ingresada con la contraseña en la base de datos
-userSchema.methods.comparePassword = async function (enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password);
+userSchema.methods.comparePassword = function(candidatePassword) {
+    return bcrypt.compare(candidatePassword, this.password);
 };
 
 module.exports = mongoose.model('User', userSchema);
