@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const Recipe = require('../models/recipeModel'); // Asegúrate de que la ruta es correcta
+const Comment = require('../models/comentModel'); // Asegúrate de que la ruta es correcta
+const Like = require('../models/likeModel'); // Asegúrate de que la ruta es correcta
+const Restaurant = require('../models/Restaurant'); // Asegúrate de que la ruta es correcta
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -36,4 +40,16 @@ userSchema.methods.comparePassword = function(candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password);
 };
 
+// Middleware para borrado en cascada
+userSchema.pre('deleteOne', { document: true, query: false }, async function(next) {
+    try {
+        await Recipe.deleteMany({ author: this._id });
+        await Comment.deleteMany({ author: this._id });
+        await Like.deleteMany({ user: this._id });
+        await Restaurant.deleteMany({ userId: this._id });
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 module.exports = mongoose.model('User', userSchema);

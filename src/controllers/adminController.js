@@ -62,10 +62,11 @@ exports.deleteUser = async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
-        await user.deleteOne();
+        await user.deleteOne(); // Usa deleteOne para eliminar el documento
 
         res.status(200).json({ message: 'Usuario eliminado exitosamente' });
     } catch (error) {
+        console.error('Error al eliminar el usuario:', error); // Registro del error
         res.status(500).json({ error: error.message });
     }
 };
