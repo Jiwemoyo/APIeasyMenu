@@ -73,7 +73,7 @@ exports.updateRecipe = async (req, res) => {
             steps: Array.isArray(steps) ? steps : steps.split(',').map(item => item.trim()).filter(Boolean),
             image: image || req.body.image, // Mantén la imagen existente si no se sube una nueva
             author: req.user.userId
-        }, { new: true });
+        }, { new: true }); //comentario random
 
         if (!updatedRecipe) {
             return res.status(404).json({ message: "Receta no encontrada" });
