@@ -4,15 +4,17 @@ const Recipe = require('../models/recipeModel');
 exports.createRecipe = async (req, res) => {
     const { title, description, ingredients, steps } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : null;
+
     try {
         const recipe = new Recipe({
             title,
             description,
-            ingredients,
-            steps,
+            ingredients: Array.isArray(ingredients) ? ingredients : ingredients.split(',').map(item => item.trim()).filter(Boolean),
+            steps: Array.isArray(steps) ? steps : steps.split(',').map(item => item.trim()).filter(Boolean),
             author: req.user.userId,
             image
         });
+
         await recipe.save();
         res.status(201).json(recipe);
     } catch (error) {
@@ -62,22 +64,22 @@ exports.updateRecipe = async (req, res) => {
     const { id } = req.params;
     const { title, description, ingredients, steps } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : null;
-    try {
-        const recipe = await Recipe.findById(id);
-        if (!recipe) return res.status(404).json({ message: 'Recipe not found' });
 
-        if (recipe.author.toString() !== req.user.userId) {
-            return res.status(403).json({ message: 'Unauthorized' });
+    try {
+        const updatedRecipe = await Recipe.findByIdAndUpdate(id, {
+            title,
+            description,
+            ingredients: Array.isArray(ingredients) ? ingredients : ingredients.split(',').map(item => item.trim()).filter(Boolean),
+            steps: Array.isArray(steps) ? steps : steps.split(',').map(item => item.trim()).filter(Boolean),
+            image: image || req.body.image, // Mantén la imagen existente si no se sube una nueva
+            author: req.user.userId
+        }, { new: true });
+
+        if (!updatedRecipe) {
+            return res.status(404).json({ message: "Receta no encontrada" });
         }
 
-        recipe.title = title || recipe.title;
-        recipe.description = description || recipe.description;
-        recipe.ingredients = ingredients || recipe.ingredients;
-        recipe.steps = steps || recipe.steps;
-        if (image) recipe.image = image;
-
-        await recipe.save();
-        res.status(200).json(recipe);
+        res.status(200).json(updatedRecipe);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
