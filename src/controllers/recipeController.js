@@ -1,12 +1,13 @@
 const Recipe = require('../models/recipeModel');
 const fs = require('fs');
 const path = require('path');
+const multer = require('multer');
 // Crear una nueva receta
 exports.createRecipe = async (req, res) => {
-    const { title, description, ingredients, steps } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : null;
-
     try {
+        const { title, description, ingredients, steps } = req.body;
+        const image = req.file ? `/uploads/${req.file.filename}` : null;
+
         const recipe = new Recipe({
             title,
             description,
@@ -19,10 +20,18 @@ exports.createRecipe = async (req, res) => {
         await recipe.save();
         res.status(201).json(recipe);
     } catch (error) {
+        if (error instanceof multer.MulterError) {
+            if (error.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).json({ error: 'File size is too large. Max limit is 5MB' });
+            }
+            return res.status(400).json({ error: 'Error uploading file' });
+        }
+        if (error.message === 'Only images are allowed') {
+            return res.status(400).json({ error: 'Only image files (jpeg, jpg, png) are allowed' });
+        }
         res.status(400).json({ error: error.message });
     }
 };
-
 // Obtener todas las recetas
 exports.getRecipes = async (req, res) => {
     try {
@@ -64,24 +73,48 @@ exports.getRecipeById = async (req, res) => {
 exports.updateRecipe = async (req, res) => {
     const { id } = req.params;
     const { title, description, ingredients, steps } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : null;
+    const newImage = req.file ? `/uploads/${req.file.filename}` : null;
 
     try {
+        const recipe = await Recipe.findById(id);
+        if (!recipe) {
+            return res.status(404).json({ message: "Receta no encontrada" });
+        }
+
+        if (recipe.author.toString() !== req.user.userId) {
+            return res.status(403).json({ message: 'Unauthorized' });
+        }
+
+        // Si hay una nueva imagen y ya existía una imagen anterior
+        if (newImage && recipe.image) {
+            const oldImagePath = path.join(__dirname, '..', '..', recipe.image);
+            fs.unlink(oldImagePath, (err) => {
+                if (err) {
+                    console.error('Error al eliminar la imagen antigua:', err);
+                }
+            });
+        }
+
         const updatedRecipe = await Recipe.findByIdAndUpdate(id, {
             title,
             description,
             ingredients: Array.isArray(ingredients) ? ingredients : ingredients.split(',').map(item => item.trim()).filter(Boolean),
             steps: Array.isArray(steps) ? steps : steps.split(',').map(item => item.trim()).filter(Boolean),
-            image: image || req.body.image, // Mantén la imagen existente si no se sube una nueva
+            image: newImage || recipe.image,
             author: req.user.userId
-        }, { new: true }); //comentario random
-
-        if (!updatedRecipe) {
-            return res.status(404).json({ message: "Receta no encontrada" });
-        }
+        }, { new: true });
 
         res.status(200).json(updatedRecipe);
     } catch (error) {
+        if (error instanceof multer.MulterError) {
+            if (error.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).json({ error: 'File size is too large. Max limit is 5MB' });
+            }
+            return res.status(400).json({ error: 'Error uploading file' });
+        }
+        if (error.message === 'Only images are allowed') {
+            return res.status(400).json({ error: 'Only image files (jpeg, jpg, png) are allowed' });
+        }
         res.status(400).json({ error: error.message });
     }
 };
