@@ -1,5 +1,6 @@
 const Recipe = require('../models/recipeModel');
-
+const fs = require('fs');
+const path = require('path');
 // Crear una nueva receta
 exports.createRecipe = async (req, res) => {
     const { title, description, ingredients, steps } = req.body;
@@ -94,6 +95,16 @@ exports.deleteRecipe = async (req, res) => {
 
         if (recipe.author.toString() !== req.user.userId) {
             return res.status(403).json({ message: 'Unauthorized' });
+        }
+
+        // Si la receta tiene una imagen, la eliminamos
+        if (recipe.image) {
+            const imagePath = path.join(__dirname, '..', '..', recipe.image);
+            fs.unlink(imagePath, (err) => {
+                if (err) {
+                    console.error('Error al eliminar la imagen:', err);
+                }
+            });
         }
 
         await recipe.deleteOne();
