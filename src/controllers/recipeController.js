@@ -4,6 +4,8 @@ const path = require('path');
 const multer = require('multer');
 // Crear una nueva receta
 exports.createRecipe = async (req, res) => {
+    // console.log('Body:', req.body);
+    // console.log('Files:', req.file); 
     try {
         const { title, description, ingredients, steps } = req.body;
         const image = req.file ? `/uploads/${req.file.filename}` : null;
