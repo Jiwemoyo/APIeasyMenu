@@ -34,6 +34,10 @@ const recipeSchema = new Schema({
     image: {
         type: String,
         required: false
+    },
+    imageFileName: {
+        type: String,
+        required: false
     }
 }, {
     timestamps: true

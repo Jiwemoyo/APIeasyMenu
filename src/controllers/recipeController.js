@@ -2,13 +2,19 @@ const Recipe = require('../models/recipeModel');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
+const { uploadImageToFirebase, deleteImageFromFirebase } = require('../utils/firebaseUpload.js');
 // Crear una nueva receta
 exports.createRecipe = async (req, res) => {
-    // console.log('Body:', req.body);
-    // console.log('Files:', req.file); 
     try {
         const { title, description, ingredients, steps } = req.body;
-        const image = req.file ? `/uploads/${req.file.filename}` : null;
+        let imageUrl = null;
+        let imageFileName = null;
+
+        if (req.file) {
+            const uploadResult = await uploadImageToFirebase(req.file);
+            imageUrl = uploadResult.downloadURL;
+            imageFileName = uploadResult.fileName;
+        }
 
         const recipe = new Recipe({
             title,
@@ -16,21 +22,13 @@ exports.createRecipe = async (req, res) => {
             ingredients: Array.isArray(ingredients) ? ingredients : ingredients.split(',').map(item => item.trim()).filter(Boolean),
             steps: Array.isArray(steps) ? steps : steps.split(',').map(item => item.trim()).filter(Boolean),
             author: req.user.userId,
-            image
+            image: imageUrl,
+            imageFileName: imageFileName
         });
 
         await recipe.save();
         res.status(201).json(recipe);
     } catch (error) {
-        if (error instanceof multer.MulterError) {
-            if (error.code === 'LIMIT_FILE_SIZE') {
-                return res.status(400).json({ error: 'File size is too large. Max limit is 5MB' });
-            }
-            return res.status(400).json({ error: 'Error uploading file' });
-        }
-        if (error.message === 'Only images are allowed') {
-            return res.status(400).json({ error: 'Only image files (jpeg, jpg, png) are allowed' });
-        }
         res.status(400).json({ error: error.message });
     }
 };
@@ -75,7 +73,8 @@ exports.getRecipeById = async (req, res) => {
 exports.updateRecipe = async (req, res) => {
     const { id } = req.params;
     const { title, description, ingredients, steps } = req.body;
-    const newImage = req.file ? `/uploads/${req.file.filename}` : null;
+    let newImageUrl = null;
+    let newImageFileName = null;
 
     try {
         const recipe = await Recipe.findById(id);
@@ -87,14 +86,14 @@ exports.updateRecipe = async (req, res) => {
             return res.status(403).json({ message: 'Unauthorized' });
         }
 
-        // Si hay una nueva imagen y ya existía una imagen anterior
-        if (newImage && recipe.image) {
-            const oldImagePath = path.join(__dirname, '..', '..', recipe.image);
-            fs.unlink(oldImagePath, (err) => {
-                if (err) {
-                    console.error('Error al eliminar la imagen antigua:', err);
-                }
-            });
+        if (req.file) {
+            const uploadResult = await uploadImageToFirebase(req.file);
+            newImageUrl = uploadResult.downloadURL;
+            newImageFileName = uploadResult.fileName;
+
+            if (recipe.imageFileName) {
+                await deleteImageFromFirebase(recipe.imageFileName);
+            }
         }
 
         const updatedRecipe = await Recipe.findByIdAndUpdate(id, {
@@ -102,21 +101,13 @@ exports.updateRecipe = async (req, res) => {
             description,
             ingredients: Array.isArray(ingredients) ? ingredients : ingredients.split(',').map(item => item.trim()).filter(Boolean),
             steps: Array.isArray(steps) ? steps : steps.split(',').map(item => item.trim()).filter(Boolean),
-            image: newImage || recipe.image,
+            image: newImageUrl || recipe.image,
+            imageFileName: newImageFileName || recipe.imageFileName,
             author: req.user.userId
         }, { new: true });
 
         res.status(200).json(updatedRecipe);
     } catch (error) {
-        if (error instanceof multer.MulterError) {
-            if (error.code === 'LIMIT_FILE_SIZE') {
-                return res.status(400).json({ error: 'File size is too large. Max limit is 5MB' });
-            }
-            return res.status(400).json({ error: 'Error uploading file' });
-        }
-        if (error.message === 'Only images are allowed') {
-            return res.status(400).json({ error: 'Only image files (jpeg, jpg, png) are allowed' });
-        }
         res.status(400).json({ error: error.message });
     }
 };
@@ -132,14 +123,8 @@ exports.deleteRecipe = async (req, res) => {
             return res.status(403).json({ message: 'Unauthorized' });
         }
 
-        // Si la receta tiene una imagen, la eliminamos
-        if (recipe.image) {
-            const imagePath = path.join(__dirname, '..', '..', recipe.image);
-            fs.unlink(imagePath, (err) => {
-                if (err) {
-                    console.error('Error al eliminar la imagen:', err);
-                }
-            });
+        if (recipe.imageFileName) {
+            await deleteImageFromFirebase(recipe.imageFileName);
         }
 
         await recipe.deleteOne();
