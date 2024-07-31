@@ -73,8 +73,16 @@ exports.getRecipeById = async (req, res) => {
 exports.updateRecipe = async (req, res) => {
     const { id } = req.params;
     const { title, description, ingredients, steps } = req.body;
-    let newImageUrl = null;
-    let newImageFileName = null;
+    let updateData = {
+        title,
+        description,
+        ingredients: ingredients ? 
+            (Array.isArray(ingredients) ? ingredients : ingredients.split(',').map(item => item.trim()).filter(Boolean)) :
+            undefined,
+        steps: steps ? 
+            (Array.isArray(steps) ? steps : steps.split(',').map(item => item.trim()).filter(Boolean)) :
+            undefined,
+    };
 
     try {
         const recipe = await Recipe.findById(id);
@@ -89,8 +97,8 @@ exports.updateRecipe = async (req, res) => {
         // Solo procesa la imagen si se proporciona un nuevo archivo
         if (req.file) {
             const uploadResult = await uploadImageToFirebase(req.file);
-            newImageUrl = uploadResult.downloadURL;
-            newImageFileName = uploadResult.fileName;
+            updateData.image = uploadResult.downloadURL;
+            updateData.imageFileName = uploadResult.fileName;
 
             // Elimina la imagen antigua si existe
             if (recipe.imageFileName) {
@@ -99,19 +107,7 @@ exports.updateRecipe = async (req, res) => {
         }
 
         // Actualiza la receta con los nuevos valores
-        const updatedRecipe = await Recipe.findByIdAndUpdate(id, {
-            title: title || recipe.title,
-            description: description || recipe.description,
-            ingredients: ingredients ? 
-                (Array.isArray(ingredients) ? ingredients : ingredients.split(',').map(item => item.trim()).filter(Boolean)) :
-                recipe.ingredients,
-            steps: steps ? 
-                (Array.isArray(steps) ? steps : steps.split(',').map(item => item.trim()).filter(Boolean)) :
-                recipe.steps,
-            image: newImageUrl || recipe.image,
-            imageFileName: newImageFileName || recipe.imageFileName,
-            author: req.user.userId
-        }, { new: true });
+        const updatedRecipe = await Recipe.findByIdAndUpdate(id, updateData, { new: true });
 
         res.status(200).json(updatedRecipe);
     } catch (error) {
