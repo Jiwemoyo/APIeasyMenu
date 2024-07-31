@@ -86,21 +86,28 @@ exports.updateRecipe = async (req, res) => {
             return res.status(403).json({ message: 'Unauthorized' });
         }
 
+        // Solo procesa la imagen si se proporciona un nuevo archivo
         if (req.file) {
             const uploadResult = await uploadImageToFirebase(req.file);
             newImageUrl = uploadResult.downloadURL;
             newImageFileName = uploadResult.fileName;
 
+            // Elimina la imagen antigua si existe
             if (recipe.imageFileName) {
                 await deleteImageFromFirebase(recipe.imageFileName);
             }
         }
 
+        // Actualiza la receta con los nuevos valores
         const updatedRecipe = await Recipe.findByIdAndUpdate(id, {
-            title,
-            description,
-            ingredients: Array.isArray(ingredients) ? ingredients : ingredients.split(',').map(item => item.trim()).filter(Boolean),
-            steps: Array.isArray(steps) ? steps : steps.split(',').map(item => item.trim()).filter(Boolean),
+            title: title || recipe.title,
+            description: description || recipe.description,
+            ingredients: ingredients ? 
+                (Array.isArray(ingredients) ? ingredients : ingredients.split(',').map(item => item.trim()).filter(Boolean)) :
+                recipe.ingredients,
+            steps: steps ? 
+                (Array.isArray(steps) ? steps : steps.split(',').map(item => item.trim()).filter(Boolean)) :
+                recipe.steps,
             image: newImageUrl || recipe.image,
             imageFileName: newImageFileName || recipe.imageFileName,
             author: req.user.userId
