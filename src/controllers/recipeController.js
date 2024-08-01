@@ -19,8 +19,8 @@ exports.createRecipe = async (req, res) => {
         const recipe = new Recipe({
             title,
             description,
-            ingredients: Array.isArray(ingredients) ? ingredients : ingredients.split(',').map(item => item.trim()).filter(Boolean),
-            steps: Array.isArray(steps) ? steps : steps.split(',').map(item => item.trim()).filter(Boolean),
+            ingredients: Array.isArray(ingredients) ? ingredients : ingredients.split('*').map(item => item.trim()).filter(Boolean),
+            steps: Array.isArray(steps) ? steps : steps.split('*').map(item => item.trim()).filter(Boolean),
             author: req.user.userId,
             image: imageUrl,
             imageFileName: imageFileName
@@ -77,10 +77,10 @@ exports.updateRecipe = async (req, res) => {
         title,
         description,
         ingredients: ingredients ? 
-            (Array.isArray(ingredients) ? ingredients : ingredients.split(',').map(item => item.trim()).filter(Boolean)) :
+            (Array.isArray(ingredients) ? ingredients : ingredients.split('*').map(item => item.trim()).filter(Boolean)) :
             undefined,
         steps: steps ? 
-            (Array.isArray(steps) ? steps : steps.split(',').map(item => item.trim()).filter(Boolean)) :
+            (Array.isArray(steps) ? steps : steps.split('*').map(item => item.trim()).filter(Boolean)) :
             undefined,
     };
 
