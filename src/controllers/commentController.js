@@ -18,6 +18,9 @@ exports.createComment = async (req, res) => {
         recipe.comments.push(comment._id);
         await recipe.save();
 
+        // Poblar la información del autor antes de enviar la respuesta
+        await comment.populate('author', 'username');
+
         res.status(201).json(comment);
     } catch (error) {
         res.status(400).json({ error: error.message });
