@@ -25,6 +25,7 @@ exports.login = async (req, res) => {
             token, 
             userId: user._id, 
             role: user.role,
+            username: user.username,
             expiresIn: expiresIn // Enviamos la duración del token en segundos
         });
     } catch (error) {
